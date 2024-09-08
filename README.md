@@ -3,7 +3,7 @@
 ## DVC pipeline for Pedestrian Detection using YoloV5 with Data Versioning
 
 <p align="center">
-<img src="screenshots/dvc_dag.png" alt="Pipeline screenshot" title="DVC Pipeline" height="390">
+<img src="screenshots/dcv.png" alt="Pipeline screenshot" title="DVC Pipeline" height="390">
 </p>
 
 <br/>
