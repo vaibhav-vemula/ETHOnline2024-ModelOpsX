@@ -1,0 +1,16 @@
+/buffer
+.streamlit
+/runs
+buffer/*.zip
+.DS_Store
+env
+__pycache__/
+
+pipe/
+copyenv
+datasets/
+
+yolov5n.pt
+
+/best_model
+mlopspipe

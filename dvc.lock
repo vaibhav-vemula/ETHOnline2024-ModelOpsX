@@ -1,0 +1,165 @@
+schema: '2.0'
+stages:
+  ingest:
+    cmd: python3 src/ingest.py
+    deps:
+    - path: src/ingest.py
+      md5: 0696bd0358a28ee3db004e56173faedf
+      size: 629
+    params:
+      params.yaml:
+        model: yolov5
+        yolov5.ingest.dcount: 5
+    outs:
+    - path: data/prepared
+      md5: ade9f122d7cd74e288855f4e3268fb76.dir
+      size: 661444
+      nfiles: 24
+  predict:
+    cmd: python3 src/predict.py data/split data/predicted
+    deps:
+    - path: data/split
+      md5: eee33d06989ca7f162d4e3269c8c0a2c.dir
+      size: 641974
+      nfiles: 11
+    - path: src/predict.py
+      md5: 6e2de5eb937754d125eb77cd2118149e
+      size: 1917
+    params:
+      params.yaml:
+        model: yolov5
+        yolov5.ingest.dcount: 5
+    outs:
+    - path: data/predicted
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+  transform:
+    cmd: python3 src/transform.py data/prepared data/transform
+    deps:
+    - path: data/prepared
+      md5: ade9f122d7cd74e288855f4e3268fb76.dir
+      size: 661444
+      nfiles: 24
+    - path: src/transform.py
+      md5: 1e0d3d1bab768493bce1f329e3cacba9
+      size: 7196
+    params:
+      params.yaml:
+        model: yolov5
+        yolov5.ingest.dcount: 5
+    outs:
+    - path: data/transform
+      md5: e2985871e65ba20a53afe0db99c69769.dir
+      size: 641223
+      nfiles: 10
+  evaluate:
+    cmd: python3 src/evaluate.py data/prepared data/transformed data/predictions data/evaluated
+      data/store
+    deps:
+    - path: data/predictions
+      md5: 9a6564485e70e293a939edb530bd46e7.dir
+      size: 1466
+      nfiles: 1
+    - path: data/prepared
+      md5: f6eb12166cd084b26e83dd52d2b827ef.dir
+      size: 533971
+      nfiles: 10
+    - path: data/transformed
+      md5: cd6a21d05f1d0c73b60d34d15a1fe584.dir
+      size: 1751
+      nfiles: 1
+    params:
+      params.yaml:
+        ingest.dcount: 1
+    outs:
+    - path: data/evaluated
+      md5: 6597630622cf7ddd531bc0a2d1d3bcfa.dir
+      size: 560713
+      nfiles: 5
+  train:
+    cmd: python3 src/train.py data/split data/trained data/augmented
+    deps:
+    - path: data/augmented
+      md5: 360ceeade4c183508d3ffc88b6de18d5.dir
+      size: 678360
+      nfiles: 15
+    - path: data/split
+      md5: eee33d06989ca7f162d4e3269c8c0a2c.dir
+      size: 641974
+      nfiles: 11
+    - path: src/train.py
+      md5: fc9d7aa2ec1d15caa012757ab1dc00a4
+      size: 2306
+    params:
+      params.yaml:
+        model: yolov5
+        yolov5.ingest.dcount: 5
+    outs:
+    - path: data/trained
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+  split:
+    cmd: python3 src/split.py data/transform data/split
+    deps:
+    - path: data/transform
+      md5: e2985871e65ba20a53afe0db99c69769.dir
+      size: 641223
+      nfiles: 10
+    - path: src/split.py
+      md5: e47a2e6bf6c2e52a5b0ddb17051f3b34
+      size: 6458
+    params:
+      params.yaml:
+        model: yolov5
+        yolov5.ingest.dcount: 5
+    outs:
+    - path: data/split
+      md5: f23876a0a659994d70276c51f7573327.dir
+      size: 641223
+      nfiles: 10
+  augment:
+    cmd: python3 src/augment.py data/split data/augmented
+    deps:
+    - path: data/split
+      md5: eee33d06989ca7f162d4e3269c8c0a2c.dir
+      size: 641974
+      nfiles: 11
+    - path: src/augment.py
+      md5: 66c72b293a63a85a80ec455e9f1042d6
+      size: 5548
+    params:
+      params.yaml:
+        model: yolov5
+        yolov5.ingest.dcount: 5
+    outs:
+    - path: data/augmented
+      md5: 0b05bbcbc9f165b52243fc776b74c5f8.dir
+      size: 676526
+      nfiles: 14
+  compare:
+    cmd: python3 src/compare.py data/trained data/compared data/predicted
+    deps:
+    - path: data/predicted
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: data/trained
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0
+    - path: src/compare.py
+      md5: 920aaf0382aac5e4f3c2fe6a07ed1307
+      size: 7671
+    params:
+      params.yaml:
+        model: yolov5
+        yolov5.hyps.epochs: 1
+        yolov5.ingest.dcount: 5
+        yolov5.weights: runs/yolov5/train/exp5/weights/best.pt
+    outs:
+    - path: data/compared
+      md5: d751713988987e9331980363e24189ce.dir
+      size: 0
+      nfiles: 0

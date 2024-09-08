@@ -1,0 +1,41 @@
+model: yolov5
+split:
+  train: 0.8
+  val: 0.2
+yolov5:
+  ingest:
+    dcount: 5
+    dpath: dataset.zip
+  weights: runs/yolov5/train/exp5/weights/best.pt
+  class_id:
+    person: 0
+    person-like: 1
+  hyps:
+    epochs: 1
+    batch: 16
+    optimizer: Adam
+  outputs:
+    train_dir: runs/yolov5/train/
+    val_dir: runs/yolov5/val/
+detectron2:
+  hyps:
+    BASE_LR: 0.001
+    BATCH_SIZE_PER_IMAGE: 16
+    EVAL_PERIOD: 500
+    GAMMA: 0.05
+    IMS_PER_BATCH: 1
+    MAX_ITER: 8
+    NUM_CLASSES: 1
+    NUM_WORKERS: 2
+    SCORE_THRESH_TEST: 0.85
+    WARM_UP_ITERS: 5
+    config_file: COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml
+  weights: best_model/model_final.pth
+  ingest:
+    dcount: 1
+    dpath: dataset.zip
+  outputs:
+    train_dir: runs/detectron2/train/
+    val_dir: runs/detectron2/val/
+  version:
+    best: v0

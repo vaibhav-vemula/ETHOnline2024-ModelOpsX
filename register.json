@@ -1,0 +1,4 @@
+{
+  "flag": true,
+  "best_model_path": "runs/yolov5/train/exp5/weights/best.pt"
+}

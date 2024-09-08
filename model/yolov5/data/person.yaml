@@ -1,0 +1,9 @@
+train: ../../data/augmented/images/train
+val:  ../../data/split/images/val
+#test: karthika_dataset/images/test/
+
+# number of classes
+nc: 2
+
+# class names
+names: ["person-like","person"]

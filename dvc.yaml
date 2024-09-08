@@ -1,0 +1,80 @@
+stages:
+  ingest:
+    cmd: python3 src/ingest.py
+    deps:
+    - src/ingest.py
+    params:
+    - yolov5.ingest.dcount
+    - model
+    outs:
+    - data/prepared
+  
+  transform:
+    cmd: python3 src/transform.py data/prepared data/transform
+    deps:
+    - src/transform.py
+    - data/prepared
+    params:
+    - yolov5.ingest.dcount
+    - model
+    outs:
+    - data/transform
+
+  split:
+    cmd: python3 src/split.py data/transform data/split
+    deps:
+    - src/split.py
+    - data/transform
+    params:
+    - yolov5.ingest.dcount
+    - model
+    outs:
+    - data/split
+  
+  augment:
+    cmd: python3 src/augment.py data/split data/augmented
+    deps:
+    - src/augment.py
+    - data/split
+    params:
+    - yolov5.ingest.dcount
+    - model
+    outs:
+    - data/augmented
+  
+  train:
+    cmd: python3 src/train.py data/split data/trained data/augmented
+    deps:
+    - src/train.py
+    - data/split
+    - data/augmented
+    params:
+    - yolov5.ingest.dcount
+    - model
+    outs:
+    - data/trained
+  
+  predict:
+    cmd: python3 src/predict.py data/split data/predicted
+    deps:
+    - src/predict.py
+    - data/split
+    params:
+    - yolov5.ingest.dcount
+    - model
+    outs:
+    - data/predicted
+  
+  compare:
+    cmd: python3 src/compare.py data/trained data/compared data/predicted 
+    deps:
+    - src/compare.py
+    - data/predicted
+    - data/trained
+    params:
+    - yolov5.ingest.dcount
+    - yolov5.weights
+    - yolov5.hyps.epochs
+    - model
+    outs:
+    - data/compared
